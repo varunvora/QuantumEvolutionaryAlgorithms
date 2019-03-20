@@ -4,7 +4,7 @@
 kmax = 3
 
 # GA parameter
-budget = 200
+budget = 100
 numOfInd = 20
 Ps = 0.2
 Pc = 0.8

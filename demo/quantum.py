@@ -1,6 +1,5 @@
 import numpy as np
 import unittest
-import re
 import random
 import itertools
 from functools import reduce
@@ -793,6 +792,7 @@ class TestMultiQuantumRegisterStates(unittest.TestCase):
         self.assertEqual(State.string_from_state(self.three_qubits_110), '110')
         self.assertEqual(State.string_from_state(self.four_qubits_1101), '1101')
         self.assertEqual(State.string_from_state(self.five_qubits_11010), '11010')
+        self.assertEqual(State.string_from_state(self.four_qubits_1111), '1111')
 
     def test_state_from_string(self):
         for value_group, target_group in zip(['0', '1', '00', '01', '10', '11', '110', '1101', '11010'],
