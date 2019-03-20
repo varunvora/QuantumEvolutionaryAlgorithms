@@ -17,7 +17,7 @@ import pandas as pd
 
 
 def main():
-    data = pd.read_csv('result/norm_data.csv', header=None)
+    data = pd.read_csv('data/iris_with_header.csv', header=None)
     clf = KMeans(n_clusters=3)
     clf.fit_predict(data)
     print(clf.cluster_centers_)
