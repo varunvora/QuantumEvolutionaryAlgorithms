@@ -2,6 +2,7 @@ from math import sqrt
 from random import random
 from pprint import pprint
 from logging import error
+import numpy as np
 
 class Qubit:
     def __init__(self):
@@ -56,6 +57,76 @@ class Qubit:
         It equates to a rotation around the Z-axis of the Bloch sphere by pi radians.
         """
         self.b = -self.b
+
+    def rotation(self, bi, isGreater):
+        dt = 0
+        sign = 0
+        ri = self.measured_value
+        positive = self.a * self.b > 0
+        aNOT = not self.a
+        bNOT = not self.b
+        if (isGreater):
+            if not ri and bi:
+                dt = np.pi * .05 #angle of rotation
+                if aNOT:
+                    sign = 1 #sign of the rotation
+                elif bNOT:
+                    sign = 0
+                elif positive:
+                    sign = -1
+                else:
+                    sign = 1
+            elif ri and not bi:
+                dt = np.pi * .025
+                if aNOT:
+                    sign = 0
+                elif bNOT:
+                    sign = 1
+                elif positive:
+                    sign = 1
+                else:
+                    sign = -1
+            elif ri and bi:
+                dt = np.pi * .025
+                if aNOT:
+                    sign = 0
+                elif bNOT:
+                    sign = 1
+                elif positive:
+                    sign = 1
+                else:
+                    sign = -1
+        else:
+            if ri and not bi:
+                dt = np.pi * .01
+                if aNOT:
+                    sign = 1
+                elif bNOT:
+                    sign = 0
+                elif positive:
+                    sign = -1
+                else:
+                    sign = 1
+            elif ri and bi:
+                dt = np.pi * .005
+                if aNOT:
+                    sign = 0
+                elif bNOT:
+                    sign = 1
+                elif positive:
+                    sign = 1
+                else:
+                    sign = -1
+
+        t = sign * dt #product of angle with the sign
+        #applying the rotation gate as a dot product
+        self.a, self.b = np.dot(
+            np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]]), np.array([self.a, self.b])
+        )
+
+
+
+
 
 
 if __name__ == "__main__":
