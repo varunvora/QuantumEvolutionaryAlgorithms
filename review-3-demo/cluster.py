@@ -5,6 +5,7 @@ import numpy as np
 
 pd.options.mode.chained_assignment = None
 
+
 class Point:
     def __init__(self, pattern_id):
         self.length = len(pattern_id)
@@ -16,7 +17,7 @@ class Point:
 
     def toJSON(self):
         return {
-            'pattern_id':self.pattern_id
+            'pattern_id': self.pattern_id
         }
 
 
@@ -51,7 +52,7 @@ class Clustering:
         nc = len(clusters)
         for i in range(nc):
             sigmaR = sigmaR + self.computeR(clusters)
-            #print(sigmaR)
+            # print(sigmaR)
         DBIndex = float(sigmaR) / float(nc)
         return DBIndex
 
@@ -59,21 +60,21 @@ class Clustering:
         listR = []
         for i, iCluster in enumerate(clusters):
             for j, jCluster in enumerate(clusters):
-                if(i != j):
+                if (i != j):
                     temp = self.computeRij(iCluster, jCluster)
                     listR.append(temp)
         return max(listR)
 
     def computeRij(self, iCluster, jCluster):
         Rij = 0
-    
+
         d = self.euclidianDistance(
             iCluster.centroid, jCluster.centroid)
-        #print("d",d)
-        #print("icluster",iCluster.computeS())
+        # print("d",d)
+        # print("icluster",iCluster.computeS())
         Rij = (iCluster.computeS() + jCluster.computeS()) / d
-       
-        #print("Rij:", Rij)
+
+        # print("Rij:", Rij)
         return Rij
 
     def euclidianDistance(self, point1, point2):
@@ -147,7 +148,6 @@ class Clustering:
                 point = Point(chromo[i].genes[j * dim: (j + 1) * dim])
                 clusters.append(Cluster(dim, point))
 
-
             clusters = self.calcDistance(clusters)
             DBIndex = self.daviesBouldin(clusters)
             generation.chromosomes[i].fitness = 1 / DBIndex
@@ -183,6 +183,7 @@ class Clustering:
         accuracy = (correct_answer / 150) * 100
 
         print("accuracy :", accuracy)
+        print(DBIndex)
         print("iBest Fitness:", 1 / DBIndex)
         print("all index:", z)
         print("Clusters centroid:")
