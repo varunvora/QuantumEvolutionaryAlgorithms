@@ -2,9 +2,9 @@ import configparser
 import numpy as np
 import pandas as pd
 
-from demo.cluster import Clustering
-from demo.genetic import Genetic
-from demo.generation import Generation
+from review_3_demo.cluster import Clustering
+from review_3_demo.genetic import Genetic
+from review_3_demo.generation import Generation
 
 NORMALIZATION = True
 

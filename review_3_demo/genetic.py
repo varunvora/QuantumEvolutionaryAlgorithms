@@ -1,8 +1,8 @@
 import random
 import numpy as np
-from demo.generation import Generation
-from demo.chromosome import Chromosome
-from demo.cluster import Clustering
+from review_3_demo.generation import Generation
+from review_3_demo.chromosome import Chromosome
+from review_3_demo.cluster import Clustering
 
 random.seed(1)
 

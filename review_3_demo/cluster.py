@@ -183,7 +183,6 @@ class Clustering:
         accuracy = (correct_answer / 150) * 100
 
         print("accuracy :", accuracy)
-        print(DBIndex)
         print("iBest Fitness:", 1 / DBIndex)
         print("all index:", z)
         print("Clusters centroid:")

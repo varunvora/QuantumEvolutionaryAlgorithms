@@ -1,4 +1,4 @@
-from math import sqrt
+from math import sqrt, pi
 from random import random
 from pprint import pprint
 from logging import error
@@ -10,10 +10,12 @@ class Qubit:
         self.measured_value = None
         self.a = random()
         self.b = sqrt(1 - pow(self.a, 2))
-        pprint(vars(self))
 
     def __str__(self):
         return f'{self.a}|0> + {self.b}|1>'
+
+    def get_documentation(self, method_name: str) -> str:
+        return getattr(self, method_name).__doc__
 
     def is_measured(self) -> bool:
         return self.measured_value is not None
@@ -22,33 +24,40 @@ class Qubit:
         if not self.is_measured():
             self.measured_value = 0 if random() < pow(self.a, 2) else 1
             self.a, self.b = int(not self.measured_value), self.measured_value
-        return self.measured_value
 
     # defining single qubit logic gates
     def hadamard_gate(self):
-        self.a, self.b = (self.a + self.b) / sqrt(2), (self.a - self.b) / sqrt(2)
+        """
+        Creates a superposition with equal probabilities of alpha and beta.
+        """
+        if not self.is_measured():
+            self.a, self.b = (self.a + self.b) / sqrt(2), (self.a - self.b) / sqrt(2)
 
     def pauli_x_gate(self):
         """
         equivalent to logical NOT gate
         It equates to a rotation around the X-axis of the Bloch sphere by pi radians.
         """
-        self.a, self.b = self.b, self.a
+        if self.measured_value is None:
+            self.a, self.b = self.b, self.a
 
     def pauli_y_gate(self):
         """
         It equates to a rotation around the Y-axis of the Bloch sphere by pi radians.
         """
-        self.a, self.b = 1j * self.b, -1j * self.a
-        pass
+        if self.measured_value is None:
+            self.a, self.b = self.b, self.a
 
     def pauli_z_gate(self):
         """
         It equates to a rotation around the Z-axis of the Bloch sphere by pi radians.
         """
-        self.b = -self.b
+        if self.measured_value is None:
+            self.b = -self.b
 
     def rotation(self, bi, isGreater):
+        if self.measured_value is not None:
+            return
         dt = 0
         sign = 0
         ri = self.measured_value
@@ -113,6 +122,17 @@ class Qubit:
         self.a, self.b = np.dot(
             np.array([[np.cos(t), -np.sin(t)], [np.sin(t), np.cos(t)]]), np.array([self.a, self.b])
         )
+
+        # keys: ri, bi, isGreater, alpha*beta -> [">" is greater than 0, "<" is less than 0, "0"]
+        rotation_angle_lookup = {
+            (0, 0, False): 0,
+            (0, 0, True): 0,
+            (0, 1, False): 0,
+            (0, 1, True): 0.05 * pi,
+            (1, 0, False): 0.01 * pi,
+            (1, 0, True): 0.025 * pi,
+            (1, 1, False): 0.005 * pi,
+            (1, 1, True): 0.025 * pi}
 
 
 if __name__ == "__main__":

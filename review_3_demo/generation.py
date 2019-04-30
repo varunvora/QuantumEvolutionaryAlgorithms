@@ -1,4 +1,4 @@
-from demo.chromosome import Chromosome
+from review_3_demo.chromosome import Chromosome
 
 
 class Generation:
