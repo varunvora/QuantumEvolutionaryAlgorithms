@@ -1,5 +1,6 @@
 from math import sqrt, pi
 from random import random
+
 Gate, Probability, QuantumRegister = None, None, None
 import itertools
 from pprint import pprint
@@ -239,6 +240,74 @@ class State(object):
             sname = ('%d' * n_qubits) % s
             state = State.state_from_string(sname)
             print(sname, '->', State.string_from_state(gate * state))
+
+
+class QuantumRegister(object):
+    def __init__(self, name, state=State.zero_state, entangled=None):
+        self._entangled = [self]
+        self._state = state
+        self.name = name
+        self.idx = None
+        self._noop = []  # after a measurement set this so that we can allow no further operations. Set to Bloch coords if bloch operation performed
+
+    @staticmethod
+    def num_qubits(state):
+        num_qubits = log(state.shape[0], 2)
+        if state.shape[1] != 1 or num_qubits not in [1, 2, 3, 4, 5]:
+            raise Exception("unrecognized state shape")
+        else:
+            return int(num_qubits)
+
+    def get_entangled(self):
+        return self._entangled
+
+    def set_entangled(self, entangled):
+        self._entangled = entangled
+        for qb in self._entangled:
+            qb._state = self._state
+            qb._entangled = self._entangled
+
+    def get_state(self):
+        return self._state
+
+    def set_state(self, state):
+        self._state = state
+        for qb in self._entangled:
+            qb._state = state
+            qb._entangled = self._entangled
+            qb._noop = self._noop
+
+    def get_noop(self):
+        return self._noop
+
+    def set_noop(self, noop):
+        self._noop = noop
+        for qb in self._entangled:
+            qb._noop = noop
+
+    def is_entangled(self):
+        return len(self._entangled) > 1
+
+    def is_entangled_with(self, qubit):
+        return qubit in self._entangled
+
+    def get_indices(self, target_qubit):
+        if not self.is_entangled_with(target_qubit):
+            search = self._entangled + target_qubit.get_entangled()
+        else:
+            search = self._entangled
+        return search.index(self), search.index(target_qubit)
+
+    def get_num_qubits(self):
+        return QuantumRegister.num_qubits(self._state)
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)): return NotImplemented
+        return self.name == other.name and np.array(self._noop).shape == np.array(other._noop).shape and np.allclose(
+            self._noop, other._noop) and np.array(self.get_state()).shape == np.array(
+            other.get_state()).shape and np.allclose(self.get_state(),
+                                                     other.get_state()) and QuantumRegisterCollection.orderings_equal(
+            self._entangled, other._entangled)
 
 
 if __name__ == "__main__":
